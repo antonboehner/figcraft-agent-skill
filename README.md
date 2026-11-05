@@ -18,6 +18,14 @@ pre-flight in front of every chunk and reads the result back afterwards.
 
 ## Install
 
+Without git: download `figcraft-skill-v0.1.0.zip` from the [latest release](https://github.com/antonboehner/figcraft-agent-skill/releases) and unpack it straight into your skills folder — the archive already holds a folder named `figcraft`.
+
+```bash
+unzip figcraft-skill-v0.1.0.zip -d ~/.agents/skills/
+```
+
+With git:
+
 ```bash
 git clone https://github.com/antonboehner/figcraft-agent-skill.git
 ln -s "$PWD/figcraft-agent-skill/figcraft" ~/.agents/skills/figcraft
