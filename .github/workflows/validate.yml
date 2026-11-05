@@ -1,0 +1,30 @@
+name: validate
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  skill:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: packaging follows the Agent Skills spec
+        run: python3 tests/packaging.py
+
+      - name: chunk validator self-tests (offline, no FigCraft needed)
+        run: python3 tests/test_check_chunk.py
+
+      - name: scripts compile
+        run: |
+          python3 -m py_compile figcraft/scripts/check_chunk.py figcraft/scripts/figctl.py
+          bash -n figcraft/scripts/figcraft-open.sh
+
+      - name: the good fixture is a chunk the validator accepts
+        run: python3 figcraft/scripts/check_chunk.py tests/fixtures/good_chunk.json --catalog tests/fixtures/commands.json

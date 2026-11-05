@@ -1,0 +1,5 @@
+[
+  {"command":"node.create","params":{"type":"frame","name":"Card","parent":[{"$ref":"nope"}],"gap":12,"sizingH":"fill"}},
+  {"command":"variable.create","params":{"name":"brand","value":"#4F46E5"}},
+  {"command":"node.creat","params":{"type":"text","text":"hi"}}
+]

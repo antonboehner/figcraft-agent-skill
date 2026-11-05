@@ -1,0 +1,950 @@
+{
+ "version": "0.15.0",
+ "note": "subset of `figcraft-cli commands --json` (0.15.0) for offline tests",
+ "commands": [
+  {
+   "id": "node.create",
+   "label": "Create layer",
+   "menu": null,
+   "params": "{type: rectangle|ellipse|polygon|star|line|arrow|vector|text|frame|section|component|slice, x?, y? (relative to the parent frame; groups don't count), width?, height?, parent? (id; default: the page), index?, name?, text? | characters? (for text), path? | points? (vector: SVG path data | [[x,y],..]; x/y move their own origin, so the layer's left/top is x/y plus their box's unscaled offset), closed? (vector), props? {node.set keys}, select? (default true)}",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "text.create",
+   "label": "Text",
+   "menu": null,
+   "params": "{text | characters, x, y, parent?, index?, name? (default: the first line), width? (fixed width wraps), props? (fontSize, fontFamily, \u2026), select? (default true)}",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "node.set",
+   "label": "Set properties",
+   "menu": null,
+   "params": "name, visible, locked, opacity (0-1 or \"50%\"), blend, x, y (relative to the parent frame; groups don't count), width, height, rotation (degrees), fills (paints or colours; gradients as {type: linearGradient|radialGradient|angularGradient|diamondGradient, stops: [\"#hex\", ...], from?, to?} too), fill (colour, {$var: variable id or name}, or \"none\"/null: no fill), strokes, stroke (colour, {$var: variable id or name}, or \"none\"/null: no stroke), strokeWeight, strokeAlign (inside|center|outside), strokeSides [t,r,b,l], strokeTopWeight / strokeRightWeight / strokeBottomWeight / strokeLeftWeight (one side; turns on individual strokes), strokeCap / startCap / endCap, strokeJoin, miterAngle (degrees: sharper joins bevel; or miterLimit as a ratio), dashes [..], dashCap (none|round|square; null: dashes take startCap and endCap), widthProfile (preset uniform|wedge|taper|eye|rounded|pinch, [[t, scale], ...] or null), brush (preset id, {preset, spacing, sizeJitter, rotationJitter, scatter, seed} or null), cornerRadius (n or [tl,tr,br,bl]), cornerSmoothing (0-1), effects, clip, isMask, layout (null|horizontal|vertical|grid|{...}), gap, crossGap, padding (n or [t,r,b,l]), paddingTop/Right/Bottom/Left, mainAlign (min|center|max, or the auto gaps spaceBetween|spaceAround|spaceEvenly), crossAlign (min|center|max|baseline: first text baselines, horizontal layouts), contentAlign (wrapped lines: auto = packed where crossAlign says | spaceBetween), wrap (rows of a horizontal layout, columns of a vertical one), strokesIncluded (the frame's inside stroke takes up space), reverseZ (canvas stacking: true = first on top), columnGap / rowGap (aliases of gap / crossGap), gridColumns, gridRows, columnTracks / rowTracks ([120 | \"1fr\" | \"auto\" | {sizing, value}]), gridColumn / gridRow (0-based cell anchor, null = auto), gridColumnSpan, gridRowSpan, gridAlignH / gridAlignV (a grid child's alignment in its cell: min|center|max, auto/null = the frame's), sizingH / sizingV (fixed|hug|fill), absolute (ignore auto layout; follows constraints), minWidth, maxWidth, minHeight, maxHeight (null removes), constraints {horizontal, vertical}, grids, exports, characters, fontFamily, fontStyle, fontSize, lineHeight (auto|px|\"150%\"), letterSpacing (px|\"2%\"), textAlign (left|center|right|justified), textAlignVertical, textAutoResize (widthAndHeight|height|none|truncate), textDecoration, textDecorationStyle (solid|dotted|wavy), textDecorationThickness / textDecorationOffset (auto|px|\"10%\" of the font size; the offset runs from the baseline down to an underline's top edge), textDecorationSkipInk (underlines break around descenders), textDecorationColor (colour, or auto/null: the text's), textCase (original|upper|lower|title|smallCaps), paragraphSpacing, paragraphIndent, listStyle (none|bulleted|numbered; with start/end: the paragraphs those chars touch), indentation (list nesting level 0-8, same range rule), listSpacing (px between list items, in place of paragraphSpacing), hangingPunctuation, hangingList (markers outside the box), leadingTrim (vertical trim: none|capHeight), maxLines, features ({tag: bool}, e.g. {\"liga\": false, \"tnum\": true}), fontVariations / variationSettings ({axis: number}, e.g. {\"wght\": 550, \"wdth\": 85}; null = none), path (a vector's SVG path data: replaces its geometry, keeping the layer, its paints, styles and bindings; width/height in the same call scale it as node.create does; its own box goes at the layer's x/y, or with x/y given, at x + its left edge and y + its top as node.create places it), pointCount, innerRadius, arcStart, arcSweep, arcInner, booleanOperation (a boolean group's operation, or an operand's own; null: the group's), operandOperation (a layer in a boolean group: how it combines with the operands below it; null: the group's), constrainProportions, description, interactions, overflow, pluginData {k: v}",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "node.get",
+   "label": "Get layer",
+   "menu": null,
+   "params": "{id, fields?: [node keys], outline?: bool (not with fields)}",
+   "shortcut": null,
+   "undoable": false
+  },
+  {
+   "id": "node.find",
+   "label": "Find layers",
+   "menu": null,
+   "params": "{root? (strict descendants; default current page), name?, type? (canonical layer type), text?, component? (main component name), limit? (0-10000; default 100)}: every filter must match; name, text and component are case-insensitive substrings, type is exact (any case); returns {ids, total} and does not select",
+   "shortcut": null,
+   "undoable": false
+  },
+  {
+   "id": "node.reparent",
+   "label": "Move layer into",
+   "menu": null,
+   "params": "{ids?, parent, index? (final position among parent's children, bottom first; default top)}",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "node.reorder",
+   "label": "Reorder layer",
+   "menu": null,
+   "params": "{id, index}",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "command.batch",
+   "label": "Run several commands",
+   "menu": null,
+   "params": "{label?, onError?, commands: [{command, params, as?}]} (one undo step)",
+   "shortcut": null,
+   "undoable": false
+  },
+  {
+   "id": "layout.add",
+   "label": "Add auto layout",
+   "menu": "Object",
+   "params": "{ids?, direction? (horizontal|vertical|grid)}",
+   "shortcut": "Shift+A",
+   "undoable": true
+  },
+  {
+   "id": "layout.remove",
+   "label": "Remove auto layout",
+   "menu": "Object",
+   "params": "{ids?}",
+   "shortcut": "Alt+Shift+A",
+   "undoable": true
+  },
+  {
+   "id": "layout.removeAll",
+   "label": "Remove all auto layout",
+   "menu": null,
+   "params": "{ids?}  takes the auto layout off the frames and every frame nested in them at once (More layout options \u25b8 Remove all auto layout); instances and the layers inside them keep theirs",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "layout.suggest",
+   "label": "Suggest auto layout",
+   "menu": "Object",
+   "params": "{ids?, direction? (horizontal|vertical|grid)}",
+   "shortcut": "Ctrl+Shift+A",
+   "undoable": true
+  },
+  {
+   "id": "layout.setTrack",
+   "label": "Set grid track size",
+   "menu": null,
+   "params": "{ids?, axis: columns|rows, index (0-based), sizing: fixed|hug|fill, value? (fixed: px, default the track's current size; fill: fr, default 1)}",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "text.onPath",
+   "label": "Text on path",
+   "menu": null,
+   "params": "{text? (text layer), path? (vector or shape layer; default: the selected text and other layer), start? (0..1 along the path), flip?}  the text follows the path and takes its effects and its fills when one shows, and the path layer is removed \u2192 {id}",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "text.pathOptions",
+   "label": "Text path options",
+   "menu": null,
+   "params": "{start? (0..1 along the path), flip?, ids?}  for text on a path",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "text.removeFromPath",
+   "label": "Remove text from path",
+   "menu": null,
+   "params": "{ids?}  text on a path back to a line of auto-width text",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "text.bold",
+   "label": "Bold",
+   "menu": "Text",
+   "params": "{ids?}",
+   "shortcut": "Cmd+B",
+   "undoable": true
+  },
+  {
+   "id": "text.italic",
+   "label": "Italic",
+   "menu": "Text",
+   "params": "{ids?}",
+   "shortcut": "Cmd+I",
+   "undoable": true
+  },
+  {
+   "id": "text.underline",
+   "label": "Underline",
+   "menu": "Text",
+   "params": "{ids?}",
+   "shortcut": "Cmd+U",
+   "undoable": true
+  },
+  {
+   "id": "text.strikethrough",
+   "label": "Strikethrough",
+   "menu": "Text",
+   "params": "{ids?}",
+   "shortcut": "Shift+Cmd+X",
+   "undoable": true
+  },
+  {
+   "id": "text.link",
+   "label": "Create link",
+   "menu": "Text",
+   "params": "{url, ids?}  linked text is underlined unless it has a decoration of its own (Underline takes it off again)",
+   "shortcut": "Shift+Cmd+U",
+   "undoable": true
+  },
+  {
+   "id": "text.bulletList",
+   "label": "Bulleted list",
+   "menu": "Text",
+   "params": "{ids?}  while editing: the selected paragraphs",
+   "shortcut": "Shift+Cmd+8",
+   "undoable": true
+  },
+  {
+   "id": "text.numberList",
+   "label": "Numbered list",
+   "menu": "Text",
+   "params": "{ids?}  while editing: the selected paragraphs",
+   "shortcut": "Shift+Cmd+7",
+   "undoable": true
+  },
+  {
+   "id": "text.alignLeft",
+   "label": "Align left",
+   "menu": "Text/Alignment",
+   "params": "{ids?}",
+   "shortcut": "Alt+Cmd+L",
+   "undoable": true
+  },
+  {
+   "id": "text.alignCenter",
+   "label": "Align center",
+   "menu": "Text/Alignment",
+   "params": "{ids?}",
+   "shortcut": "Alt+Cmd+T",
+   "undoable": true
+  },
+  {
+   "id": "text.alignRight",
+   "label": "Align right",
+   "menu": "Text/Alignment",
+   "params": "{ids?}",
+   "shortcut": "Alt+Cmd+R",
+   "undoable": true
+  },
+  {
+   "id": "text.alignJustify",
+   "label": "Justify",
+   "menu": "Text/Alignment",
+   "params": "{ids?}",
+   "shortcut": "Alt+Cmd+J",
+   "undoable": true
+  },
+  {
+   "id": "text.sizeUp",
+   "label": "Increase font size",
+   "menu": "Text/Adjust",
+   "params": "{ids?}",
+   "shortcut": "Shift+Cmd+.",
+   "undoable": true
+  },
+  {
+   "id": "text.sizeDown",
+   "label": "Decrease font size",
+   "menu": "Text/Adjust",
+   "params": "{ids?}",
+   "shortcut": "Shift+Cmd+,",
+   "undoable": true
+  },
+  {
+   "id": "text.weightUp",
+   "label": "Increase font weight",
+   "menu": "Text/Adjust",
+   "params": "{ids?}",
+   "shortcut": "Alt+Cmd+.",
+   "undoable": true
+  },
+  {
+   "id": "text.weightDown",
+   "label": "Decrease font weight",
+   "menu": "Text/Adjust",
+   "params": "{ids?}",
+   "shortcut": "Alt+Cmd+,",
+   "undoable": true
+  },
+  {
+   "id": "text.lineHeightUp",
+   "label": "Increase line height",
+   "menu": "Text/Adjust",
+   "params": "{ids?}",
+   "shortcut": "Alt+Shift+.",
+   "undoable": true
+  },
+  {
+   "id": "text.lineHeightDown",
+   "label": "Decrease line height",
+   "menu": "Text/Adjust",
+   "params": "{ids?}",
+   "shortcut": "Alt+Shift+,",
+   "undoable": true
+  },
+  {
+   "id": "text.trackingUp",
+   "label": "Increase letter spacing",
+   "menu": "Text/Adjust",
+   "params": "{ids?}",
+   "shortcut": "Alt+.",
+   "undoable": true
+  },
+  {
+   "id": "text.trackingDown",
+   "label": "Decrease letter spacing",
+   "menu": "Text/Adjust",
+   "params": "{ids?}",
+   "shortcut": "Alt+,",
+   "undoable": true
+  },
+  {
+   "id": "text.caseOriginal",
+   "label": "Original case",
+   "menu": "Text/Case",
+   "params": "{ids?}",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "text.caseUpper",
+   "label": "Uppercase",
+   "menu": "Text/Case",
+   "params": "{ids?}",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "text.caseLower",
+   "label": "Lowercase",
+   "menu": "Text/Case",
+   "params": "{ids?}",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "text.caseTitle",
+   "label": "Title case",
+   "menu": "Text/Case",
+   "params": "{ids?}",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "text.caseSmallCaps",
+   "label": "Small caps",
+   "menu": null,
+   "params": "{ids?}",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "text.case",
+   "label": "Letter case",
+   "menu": null,
+   "params": "{case: original|upper|lower|title|smallCaps, ids?}",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "text.decoration",
+   "label": "Decoration",
+   "menu": null,
+   "params": "{decoration: none|underline|strikethrough, ids?}",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "text.listStyle",
+   "label": "List style",
+   "menu": null,
+   "params": "{style | list: none|bulleted|numbered, ids?}  while editing: the selected paragraphs",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "text.paragraphIndent",
+   "label": "Paragraph indent",
+   "menu": null,
+   "params": "{indent (px), ids?}",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "text.paragraphSpacing",
+   "label": "Paragraph spacing",
+   "menu": null,
+   "params": "{spacing (px), ids?}",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "text.maxLines",
+   "label": "Max lines",
+   "menu": null,
+   "params": "{lines (0 = no limit; truncates: auto-height and auto-width text hug up to that many lines, fixed-size text becomes a truncating box), ids?}",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "text.setFeatures",
+   "label": "OpenType features",
+   "menu": null,
+   "params": "{features: {tag: bool | null (font default)}, replace? (clear others first), id?/ids?}",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "text.setVariations",
+   "label": "Variable font axes",
+   "menu": null,
+   "params": "{variations: {axis: number | null (style default)}, replace? (clear others first), id?/ids?}; while editing: the selected range",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "text.preview",
+   "label": "Preview a change",
+   "menu": null,
+   "params": "{command: style.apply|library.applyStyle|text.setVariations|text.style|node.set|fill.set|stroke.set|selection.setPaint|style.update, params}  shows what the command would do on the canvas without an undo step (a hovered font family or style, text style, named instance, blend mode, or a dragged axis slider), in place of an earlier preview; text.endPreview or any other command ends it, so running the command for real commits it as one undo step",
+   "shortcut": null,
+   "undoable": false
+  },
+  {
+   "id": "text.endPreview",
+   "label": "End text preview",
+   "menu": null,
+   "params": "{}  puts the document back as it was before text.preview \u2192 {ended}",
+   "shortcut": null,
+   "undoable": false
+  },
+  {
+   "id": "text.set",
+   "label": "Set text",
+   "menu": null,
+   "params": "{id?, characters | text}",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "text.style",
+   "label": "Style text range",
+   "menu": null,
+   "params": "{id?, start?, end?, fontFamily?, fontStyle?, fontWeight?, fontVariations? | variationSettings?, fontSize?, lineHeight?, letterSpacing?, textDecoration?, textDecorationStyle?, textDecorationThickness?, textDecorationOffset?, textDecorationSkipInk?, textDecorationColor?, textCase?, hyperlink?, textFills?}",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "text.edit.begin",
+   "label": "Edit text",
+   "menu": null,
+   "params": "{id, caret? (char index; default select all)}",
+   "shortcut": null,
+   "undoable": false
+  },
+  {
+   "id": "text.edit.insert",
+   "label": "Type text",
+   "menu": null,
+   "params": "{text}",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "text.edit.key",
+   "label": "Text key",
+   "menu": null,
+   "params": "{key: Backspace|Delete|Left|Right|Up|Down|Home|End|Enter|Tab|Escape|SelectAll, shift?, alt?, cmd?}  in a list, Tab nests the item and Shift+Tab, Enter on an empty item or Backspace at its start move it out",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "text.listIndent",
+   "label": "Indent list",
+   "menu": null,
+   "params": "{}  while editing: the selected list items a level deeper",
+   "shortcut": "Cmd+]",
+   "undoable": true
+  },
+  {
+   "id": "text.listOutdent",
+   "label": "Outdent list",
+   "menu": null,
+   "params": "{}  while editing: the selected list items a level out",
+   "shortcut": "Cmd+[",
+   "undoable": true
+  },
+  {
+   "id": "text.edit.caret",
+   "label": "Set caret",
+   "menu": null,
+   "params": "{index, extend?}",
+   "shortcut": null,
+   "undoable": false
+  },
+  {
+   "id": "text.edit.selectWord",
+   "label": "Select word",
+   "menu": null,
+   "params": "{index}",
+   "shortcut": null,
+   "undoable": false
+  },
+  {
+   "id": "text.edit.selectLine",
+   "label": "Select line",
+   "menu": null,
+   "params": "{index}",
+   "shortcut": null,
+   "undoable": false
+  },
+  {
+   "id": "text.edit.preedit",
+   "label": "Compose text (IME)",
+   "menu": null,
+   "params": "{text (empty = cancel), cursor? (chars into text)}; shown at the caret, committed by text.edit.insert",
+   "shortcut": null,
+   "undoable": false
+  },
+  {
+   "id": "text.edit.selection",
+   "label": "Text selection",
+   "menu": null,
+   "params": "{}",
+   "shortcut": null,
+   "undoable": false
+  },
+  {
+   "id": "text.edit.end",
+   "label": "Stop editing text",
+   "menu": null,
+   "params": "{}",
+   "shortcut": null,
+   "undoable": false
+  },
+  {
+   "id": "text.openLink",
+   "label": "Open link",
+   "menu": null,
+   "params": "{}  while editing: the link at the caret (the selection's start) goes to the UI to open, as Alt+Enter does (\"press Option Return / Alt Enter to activate a focused link\"); only a web or mail link opens \u2192 {url} ({url: null}: no link there)",
+   "shortcut": "Alt+Enter",
+   "undoable": false
+  },
+  {
+   "id": "text.fonts",
+   "label": "List fonts",
+   "menu": null,
+   "params": "{family? (list its styles), style?, features? (the face's OpenType features), axes? (the face's variation axes and named instances)}",
+   "shortcut": null,
+   "undoable": false
+  },
+  {
+   "id": "text.rescanFonts",
+   "label": "Rescan installed fonts",
+   "menu": null,
+   "params": "{}  walks the system font folders again, for fonts installed while the app runs; the open document's auto-sizing text in the families that gained faces (new ones, or styles installed since) fits them (text.refit) \u2192 {added: [families that were unknown], refitted: [ids]}",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "text.loadFont",
+   "label": "Load font file",
+   "menu": null,
+   "params": "{path | data (base64)}  adds a font file (.ttf, .otf, .ttc, .otc; every face of a collection) to this session's fonts without installing it; the open document's auto-sizing text in its families fits it (text.refit) \u2192 {families, refitted: [ids]}",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "text.missingFonts",
+   "label": "Missing fonts",
+   "menu": "Text",
+   "params": "{}  fonts the open document names that aren't installed (text layers, styled ranges, text styles, font family variables); the app shows them \u2192 {families: [{family, layers, source (the font store source font.download gets it from, or null)}]}",
+   "shortcut": null,
+   "undoable": false
+  },
+  {
+   "id": "text.refit",
+   "label": "Fit text to fonts",
+   "menu": null,
+   "params": "{ids? (these layers and the text in them; default: the whole document)}  auto-sizing text measures its box again, e.g. a box measured in a fallback font while its family was missing \u2192 {refitted: [ids whose size changed]}",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "variable.createCollection",
+   "label": "Create variable collection",
+   "menu": null,
+   "params": "{name, modes? [names]}",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "variable.addMode",
+   "label": "Add mode",
+   "menu": null,
+   "params": "{collection, name, from? (mode id or name to duplicate; default: the default mode)}",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "variable.create",
+   "label": "Create variable",
+   "menu": null,
+   "params": "{collection, name, type: color|number|string|boolean, value (default mode) | values {modeName: value}, description?}  a value may also be {alias: variable} (same type); a colour value may also be {alpha: {variable, opacity 0..1}} (that variable's colour with its alpha replaced by the opacity) or {mix: {from, to, t}} (operands {variable: variable} or {literal: colour}; t is 0..1, 0 gives from and 1 to; blended per channel over the stored values, in the document's colour profile, including alpha; converting the profile keeps a mix's ends exact and moves its colours in between slightly), each alone in its object",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "variable.set",
+   "label": "Set variable value",
+   "menu": null,
+   "params": "{variable, mode? (name or id; default first), value | {alias: variable} (same type, no loops) | {alpha} | {mix} (colour variables; shapes as in variable.create; no loops)}",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "variable.delete",
+   "label": "Delete variable",
+   "menu": null,
+   "params": "{variable} (bound layers keep their values; variables aliasing it take its values; colour calculations reading it keep the colour they show)",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "variable.bind",
+   "label": "Bind variable",
+   "menu": null,
+   "params": "{ids?, field (fill|stroke (first paint)|fills/<i>/color|strokes/<i>/color|fills/<i>/stops/<j>/color (gradient stops)|effects/<i>/<offsetX|offsetY|radius|startRadius|spread|color>|layoutGrids/<i>/<size|count|gutter|offset>|componentProperties/<name> (instances: boolean/text properties; variant properties take string variables naming a value)|width|height|opacity (percent)|cornerRadius|gap|paddingHorizontal|characters|visible|fontSize\u2026; list indices bottom first), variable (null unbinds)}",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "variable.setMode",
+   "label": "Set variable mode",
+   "menu": null,
+   "params": "{ids? (frames/page), collection, mode (id or name; null: Auto, inherited from the parent)}",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "variable.list",
+   "label": "List variables",
+   "menu": null,
+   "params": "{}",
+   "shortcut": null,
+   "undoable": false
+  },
+  {
+   "id": "variable.update",
+   "label": "Edit variable",
+   "menu": null,
+   "params": "{variable, name?, description?, scopes? ([scope ids]; null or [\"ALL_SCOPES\"] = every supported property, [] = hidden from pickers), hiddenFromPublishing? (left out when the file is published as a library), codeSyntax? {WEB?, iOS?, ANDROID?: name code uses (\"\" clears)}}",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "variable.duplicate",
+   "label": "Duplicate variable",
+   "menu": null,
+   "params": "{variable} \u2192 {id}",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "variable.renameMode",
+   "label": "Rename mode",
+   "menu": null,
+   "params": "{collection, mode, name}",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "variable.removeMode",
+   "label": "Delete mode",
+   "menu": null,
+   "params": "{collection, mode} (a collection keeps at least one mode)",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "variable.moveMode",
+   "label": "Move mode",
+   "menu": null,
+   "params": "{collection, mode, to (index; 0 = the default mode, layers on Auto follow it)}",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "variable.renameCollection",
+   "label": "Rename collection",
+   "menu": null,
+   "params": "{collection, name}",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "variable.deleteCollection",
+   "label": "Delete collection",
+   "menu": null,
+   "params": "{collection} (with its variables; bound layers keep their values; variables elsewhere aliasing them take their values and colour calculations reading them keep the colour they show)",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "variable.resetOverride",
+   "label": "Reset variable override",
+   "menu": null,
+   "params": "{variable (a variable of an extended collection inherited from the collection it extends), mode? (id or name; every overridden mode when omitted)}  the value follows the inherited one again",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "variable.extendCollection",
+   "label": "Extend collection",
+   "menu": null,
+   "params": "{collection (id or name of a collection of this file), name? (default \"<name> (extended)\")}  \u2192 {id}: a collection with its modes and variables that follows its edits (an extended collection can be extended again); override their values per mode with variable.set (variable.resetOverride goes back to the inherited value)",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "variable.export",
+   "label": "Export variables",
+   "menu": null,
+   "params": "{collections? [ids or names; default every collection of this file, not library copies], format? (json (default): the local variables JSON that variable.import reads, colour calculations as the colour they show in each mode with other collections in their default modes | css: custom properties, the default mode on :root and each other mode on [data-<collection>=\"<mode>\"], colour calculations as the colour they show in that mode with other collections in their default modes; numbers in px unless layers or scopes use them as opacity or font weight | tailwind: a Tailwind CSS v4 stylesheet, the default mode as an @theme block named the way inspect.code's tailwind utilities read them: --color-*, --radius-*, --text-*, --spacing-*, --font-*, unique per file; each other mode as in css; colour calculations as the colour they show in that mode, other collections in their default modes) | dart: a Dart file for Flutter, a class of constants per collection and mode (Color, double, String, bool), aliases and colour calculations resolved), path? (write it there)}  \u2192 {text}, or {path} when written",
+   "shortcut": null,
+   "undoable": false
+  },
+  {
+   "id": "variable.import",
+   "label": "Import variables",
+   "menu": null,
+   "params": "{variables (the local variables JSON, as variable.export writes it: an object, JSON text or a path to a regular file of at most 256 MiB; `variableCollections` and `variables` under `meta` or at the top level)}  collections join this file's collection of the same name (values by mode name; new modes and variables are added, a variable of another type is skipped), others are added  \u2192 {collections (added), variables (added), updated, warnings (also when it holds no variables, or fewer than its collections list)}",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "component.create",
+   "label": "Create component",
+   "menu": "Object",
+   "params": "{ids?}  (one frame/group becomes a component; several layers are wrapped in one)",
+   "shortcut": "Alt+Cmd+K",
+   "undoable": true
+  },
+  {
+   "id": "component.createMultiple",
+   "label": "Create multiple components",
+   "menu": "Object",
+   "params": "{ids?}",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "component.combineVariants",
+   "label": "Combine as variants",
+   "menu": "Object",
+   "params": "{ids? (main components; none already a variant, a library copy or inside an instance)}  (wraps them in a new component set; names without `=` become \"Property 1=Default\", \"Property 1=VariantN\")",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "component.addVariant",
+   "label": "Add variant",
+   "menu": null,
+   "params": "{id? (component set, variant, or a main component not in a set yet: it becomes a set of itself and the new variant), property?, value?}  (duplicates the variant; `property`=`value` names the new one)",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "instance.create",
+   "label": "Create instance",
+   "menu": null,
+   "params": "{component (component or set: its default variant), x?, y?, parent?}",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "instance.place",
+   "label": "Place instance",
+   "menu": null,
+   "params": "{component, x, y (page point: the instance is centred there, inside the frame under it; auto layout frames insert by position)}",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "component.exposeInstance",
+   "label": "Expose nested instance",
+   "menu": null,
+   "params": "{id? (an instance inside a main component), exposed? (default true)} \u2014 its properties then show on the main's instances",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "instance.exposed",
+   "label": "Exposed nested instances",
+   "menu": null,
+   "params": "{id? (instance)} \u2192 the nested instance copies whose properties it exposes",
+   "shortcut": null,
+   "undoable": false
+  },
+  {
+   "id": "component.makeSlot",
+   "label": "Make slot",
+   "menu": null,
+   "params": "{id? (a frame inside a main component), name? (the slot property's name; the frame's by default), preferred? [component or set ids]}  (its instances take any content there)",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "component.removeSlot",
+   "label": "Remove slot",
+   "menu": null,
+   "params": "{id? (a slot frame of a main component)}  (instances lose their own content in it)",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "instance.slotInsert",
+   "label": "Insert into slot",
+   "menu": null,
+   "params": "{id? (a slot inside an instance, or the instance with `slot`), slot? (slot property name), component, index? (child index; on top when omitted), replace? (clear the slot first)}",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "instance.resetSlot",
+   "label": "Reset slot",
+   "menu": null,
+   "params": "{id? (a slot inside an instance, or the instance with `slot`), slot?}  (back to the main's default content)",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "component.hideWhenPublishing",
+   "label": "Hide when publishing",
+   "menu": "Libraries",
+   "params": "{ids? (components, sets or layers in them; default the selection), on? (default: toggle, hiding unless all are hidden)}  keeps them out of the library this file publishes, the way a name starting with `.` or `_` does: hiding puts a `.` before the name, showing takes the leading `.` and `_` away \u2192 {ids, hidden}",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "component.detach",
+   "label": "Detach instance",
+   "menu": "Object",
+   "params": "{ids?}",
+   "shortcut": "Alt+Cmd+B",
+   "undoable": true
+  },
+  {
+   "id": "component.resetInstance",
+   "label": "Reset all changes",
+   "menu": "Object",
+   "params": "{ids?}",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "component.resetOverride",
+   "label": "Reset override",
+   "menu": null,
+   "params": "{id?, group? (fills|strokes|effects|opacity|visible|name|corners|characters|textStyle|padding|gap|alignment|grids|exports|interactions|size|position|modes|component|props|slot; all when omitted)}",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "component.goToMain",
+   "label": "Go to main component",
+   "menu": "Object",
+   "params": "{id?}",
+   "shortcut": "Ctrl+Alt+Cmd+K",
+   "undoable": false
+  },
+  {
+   "id": "component.pushChanges",
+   "label": "Push changes to main component",
+   "menu": "Object",
+   "params": "{id?}",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "component.restoreMain",
+   "label": "Restore main component",
+   "menu": "Object",
+   "params": "{id?}  (an instance whose main was deleted becomes the main again, in its place)",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "instance.swap",
+   "label": "Swap instance",
+   "menu": null,
+   "params": "{ids?, component}",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "instance.swapAt",
+   "label": "Swap instance at point",
+   "menu": null,
+   "params": "{component (component or set: its default variant), x, y (page point)}  swaps the instance there (preferring one showing the same component set; Alt-drop from the Assets panel); only text layers keep their overrides (by matching names)",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "instance.setProperties",
+   "label": "Set instance properties",
+   "menu": null,
+   "params": "{ids?, properties {name: value}} (variant properties switch variants)",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "component.addProperty",
+   "label": "Add component property",
+   "menu": null,
+   "params": "{id? (component, set, or a layer inside a component: it gets bound), name, type: boolean|text|instanceSwap|variant|slot, default? (boolean: the bound layer's visibility in the main; without it, the layer's current visibility), layer? (node bound to it; a frame for slots), preferred? (instance swap and slot properties: component or set ids offered first)}",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "component.editProperty",
+   "label": "Edit component property",
+   "menu": null,
+   "params": "{id? (component or set), name, newName?, default? (variant properties: that variant takes the top-left place; boolean: the main's bound layers show or hide to match), value? + newValue? (rename a variant value), index? (variant properties: move to this place; the variants' names follow), preferred? (instance swap and slot properties: component or set ids offered first)}",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "component.deleteProperty",
+   "label": "Delete component property",
+   "menu": null,
+   "params": "{id? (component or set), name}",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "component.bindProperty",
+   "label": "Bind layer to property",
+   "menu": null,
+   "params": "{layer?, property (null/\"\" unbinds), field?: visible|characters|mainComponent|slot}",
+   "shortcut": null,
+   "undoable": true
+  },
+  {
+   "id": "component.properties",
+   "label": "Component properties",
+   "menu": null,
+   "params": "{id? (component, set or instance)}",
+   "shortcut": null,
+   "undoable": false
+  },
+  {
+   "id": "component.list",
+   "label": "List components",
+   "menu": null,
+   "params": "{} \u2192 [{id, name, type, page, instances, folder (the Assets panel's folders: page, frames, slash names), label, library?}]",
+   "shortcut": null,
+   "undoable": false
+  },
+  {
+   "id": "component.playground",
+   "label": "Component playground",
+   "menu": null,
+   "params": "{id? (an instance, a component or a component set; default the selection), properties? {name: value} (variant, boolean, text and instance-swap properties, as instance.setProperties takes them), language? css|html|react|leptos|vue|swiftui|compose|arkui|flutter (default react), path? (write the preview there as a PNG), scale? (the PNG's, default 2)} \u2192 {component, properties: [{name, type, options?, value}], language, code, width, height, path?}  the component with those property values, tried on a copy: its code and its look. Nothing in the document changes",
+   "shortcut": null,
+   "undoable": false
+  },
+  {
+   "id": "text.fit",
+   "label": "Fit text to its box",
+   "menu": null,
+   "params": "{ids? (text layers; default the selection), maxLines? (default: no limit but the box height), minSize? (smallest font size, px; default 60% of the current), orphans? (avoid a one-word last line; default true)}  needs a fixed width (fixed or auto-height text)  \u2192 {fitted: [{id, fontSize, lines, fits, orphan}]}",
+   "shortcut": null,
+   "undoable": true
+  }
+ ]
+}
